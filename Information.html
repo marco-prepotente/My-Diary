@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marco's Diary</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #D2B48C;
+            color: #5a4a42;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><line x1="0" y1="0" x2="80" y2="0" stroke="%23E8DCC2" stroke-width="0.5"/><line x1="0" y1="80" x2="80" y2="80" stroke="%23E8DCC2" stroke-width="0.5"/><line x1="0" y1="0" x2="0" y2="80" stroke="%23E8DCC2" stroke-width="0.5"/><line x1="80" y1="0" x2="80" y2="80" stroke="%23E8DCC2" stroke-width="0.5"/></svg>');
+            background-size: 80px 80px;
+            background-position: center;
+            animation: cosmic-drift 90s linear infinite alternate;
+            transition: background-color 0.3s ease;
+        }
+
+        @keyframes cosmic-drift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(232, 224, 216, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #b8a99e;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a3958c;
+        }
+
+        .header {
+            padding: 28px 20px;
+            text-align: center;
+            background: linear-gradient(to right, rgba(245, 240, 230, 0.95), rgba(235, 230, 220, 0.85));
+            backdrop-filter: blur(10px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            z-index: 20;
+            border-bottom: 1px solid rgba(220, 205, 180, 0.7);
+            border-radius: 0 0 15px 15px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            font-weight: 700;
+            color: #4A3A32;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            letter-spacing: 0.05em;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #7A6A62;
+            margin-top: 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 32px;
+            position: relative;
+        }
+
+        .bubble-container {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 500px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bubble {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.4s ease-in-out;
+            background: rgba(248, 245, 235, 0.85);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1),
+                        0 10px 40px rgba(0, 0, 0, 0.08),
+                        inset 0 2px 5px rgba(240, 235, 225, 0.9);
+            border: 1px solid rgba(220, 205, 180, 0.5);
+            z-index: 10;
+        }
+
+        .bubble:hover {
+            transform: scale(1.2);
+            background: rgba(250, 245, 235, 0.98);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25),
+                        0 18px 60px rgba(0, 0, 0, 0.15),
+                        inset 0 4px 10px rgba(250, 245, 235, 1);
+            border-color: rgba(250, 245, 235, 0.9);
+            z-index: 20;
+            animation-play-state: paused;
+        }
+
+        .bubble.page-diary {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #5a4a42;
+            padding: 5px;
+            text-align: center;
+            line-height: 1.2;
+            word-break: break-word;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bubble.image-diary img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures the image fills the circle */
+            border-radius: 50%;
+        }
+        .bubble.image-diary .overlay-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9);
+            padding: 4px 6px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            box-sizing: border-box;
+            line-height: 1.2;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
+            padding: 16px;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.4s ease-in-out;
+        }
+
+        .modal-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: linear-gradient(to bottom right, #fdfaf7, #f4eee8);
+            border-radius: 20px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(220, 205, 180, 0.5);
+            max-width: 90%;
+            width: 700px;
+            max-height: 90vh;
+            overflow: hidden;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-content.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            background: rgba(240, 235, 225, 0.85);
+            padding: 20px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 18px 18px 0 0;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3d2d27;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.08);
+        }
+
+        .close-modal {
+            font-size: 2rem;
+            color: #7a6a62;
+            cursor: pointer;
+            transition: all 0.3s ease-out;
+            background: none;
+            border: none;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            transform: rotate(90deg) scale(1.2);
+            color: #4a3a32;
+        }
+
+        .modal-body {
+            padding: 28px;
+            overflow-y: auto;
+            max-height: 70vh;
+            flex-grow: 1;
+        }
+
+        .modal-image-container {
+            margin-bottom: 28px;
+            display: none;
+            text-align: center;
+        }
+
+        .modal-image-container img {
+            max-width: 100%;
+            height: auto;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 1rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(240, 235, 225, 0.8);
+        }
+
+        .modal-text {
+            color: #5a4a42;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px 15px;
+                border-radius: 0 0 10px 10px;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+                letter-spacing: 0.03em;
+            }
+            .header p {
+                font-size: 0.95rem;
+            }
+            .bubble {
+                width: 60px;
+                height: 60px;
+            }
+            .bubble.page-diary, .bubble.image-diary .overlay-text {
+                font-size: 0.75rem;
+                padding: 3px;
+            }
+            .modal-content {
+                width: 95%;
+                border-radius: 12px;
+            }
+            .modal-header {
+                padding: 15px 20px;
+                border-radius: 10px 10px 0 0;
+            }
+            .modal-header h2 {
+                font-size: 1.1rem;
+            }
+            .close-modal {
+                font-size: 1.5rem;
+            }
+            .modal-body {
+                padding: 20px;
+            }
+            .modal-image-container {
+                margin-bottom: 20px;
+            }
+            .modal-image-container img {
+                max-height: 180px;
+            }
+            .modal-text {
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>Marco's Diary</h1>
+        <p>Memories in the present</p>
+    </header>
+
+    <main class="main-content">
+        <div id="bubble-container" class="bubble-container">
+            <p id="no-entries-message" style="color: #8a7a42; font-size: 1.2rem; text-align: center; display: none; position: absolute;">Add your first diary entry!</p>
+        </div>
+
+    </main>
+
+    <div id="content-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title"></h2>
+                <button id="close-modal" class="close-modal" aria-label="Close modal">
+                    &times;
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-image-container" class="modal-image-container">
+                    <img id="modal-image" src="" alt="Memory">
+                </div>
+                <p id="modal-text" class="modal-text"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const diaryEntries = [
+            {
+                id:"first-entry",
+                type: "page",
+                display: "Read Me",
+                content: "Hello if you are reading this, this means i released the official link of my diary!!!! , this place will contain the things i have done the past few years of my life, if i'm dead then okay ",
+                imageUrl: "none",
+                bubbleImageUrl: "https://placehold.co/80x80/b8a99e/ffffff?text=Read+Me"
+            },
+            {
+                id:"My-Self",
+                type: "image",
+                display: "Me",
+                content: "Hello ! ,this is me, Marco Prepotente, the creator of this diary, this contains my memories good and bad, read 'Read Me If You Havent' ",
+                imageUrl: "https://raw.githubusercontent.com/marco-prepotente/Images/main/myimage.jpg",
+                bubbleImageUrl: "https://raw.githubusercontent.com/marco-prepotente/Images/main/myimage.jpg"
+            }
+
+            ];
+
+        const MAX_BUBBLES_DISPLAY_CAP = 7; 
+        const SCROLL_STEP = 5;
+        let currentFirstBubbleIndex = 0;
+        const bubbleSize = 80;
+        const minDistance = bubbleSize * 1.8;
+
+        const bubbleContainer = document.getElementById('bubble-container');
+        const noEntriesMessage = document.getElementById('no-entries-message');
+        const contentModal = document.getElementById('content-modal');
+        const closeModalButton = document.getElementById('close-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalText = document.getElementById('modal-text');
+        const modalImageContainer = document.getElementById('modal-image-container');
+        const modalImage = document.getElementById('modal-image');
+        const modalContent = document.querySelector('.modal-content');
+
+        function initDiary() {
+            renderBubbles();
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            document.body.addEventListener('click', handleScreenClickNavigation);
+            document.body.addEventListener('touchstart', handleTouchStart, false);
+            document.body.addEventListener('touchend', handleTouchEnd, false);
+
+            closeModalButton.addEventListener('click', closeModal);
+            contentModal.addEventListener('click', (e) => {
+                if (e.target === contentModal) closeModal();
+            });
+            window.addEventListener('resize', debounce(renderBubbles, 200));
+        }
+
+        let xDown = null;
+        let yDown = null;
+
+        function handleTouchStart(evt) {
+            if (contentModal.classList.contains('visible')) return;
+            const firstTouch = evt.touches[0];
+            xDown = firstTouch.clientX;
+            yDown = firstTouch.clientY;
+        }
+
+        function handleTouchEnd(evt) {
+            if (!xDown || !yDown || contentModal.classList.contains('visible')) {
+                xDown = null;
+                yDown = null;
+                return;
+            }
+
+            const xUp = evt.changedTouches[0].clientX;
+            const yUp = evt.changedTouches[0].clientY;
+
+            const xDiff = xDown - xUp;
+            const yDiff = yDown - yUp;
+
+            if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 50) {
+                if (xDiff > 0) {
+                    navigateNextBubbles();
+                } else {
+                    navigatePrevBubbles();
+                }
+            }
+            xDown = null;
+            yDown = null;
+        }
+
+        function handleScreenClickNavigation(event) {
+            if (contentModal.classList.contains('visible')) return;
+
+            const target = event.target;
+            const isClickOnBubble = target.closest('.bubble');
+            
+            if (isClickOnBubble) {
+                return;
+            }
+
+            const bodyWidth = document.body.offsetWidth;
+            const clickX = event.clientX;
+
+            if (diaryEntries.length === 0) return;
+
+            if (clickX < bodyWidth / 2) {
+                navigatePrevBubbles();
+            } else {
+                navigateNextBubbles();
+            }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, wait);
+            };
+        }
+
+        function renderBubbles() {
+            bubbleContainer.innerHTML = '';
+            bubbleContainer.appendChild(noEntriesMessage); 
+            let activeBubbles = []; 
+
+            if (diaryEntries.length === 0) {
+                noEntriesMessage.style.display = 'block'; 
+                return;
+            } else {
+                noEntriesMessage.style.display = 'none'; 
+            }
+
+            const containerWidth = bubbleContainer.offsetWidth;
+            const containerHeight = bubbleContainer.offsetHeight;
+
+            const estimatedMaxBubblesInArea = Math.floor(containerWidth / minDistance) * Math.floor(containerHeight / minDistance);
+            
+            const currentMaxBubblesToDisplay = Math.max(1, Math.min(MAX_BUBBLES_DISPLAY_CAP, estimatedMaxBubblesInArea));
+
+            const renderedEntryIds = new Set(); 
+            let bubblesPlaced = 0;
+            let currentAttemptIndex = currentFirstBubbleIndex;
+            let safetyCounter = 0; 
+
+            while (bubblesPlaced < currentMaxBubblesToDisplay && safetyCounter < (diaryEntries.length * 5 + 100)) {
+                if (diaryEntries.length === 0) break;
+
+                const entryIndex = currentAttemptIndex % diaryEntries.length;
+                const entry = diaryEntries[entryIndex];
+
+                if (renderedEntryIds.has(entry.id)) {
+                    currentAttemptIndex++;
+                    safetyCounter++;
+                    continue;
+                }
+
+                const bubble = createBubble(entry);
+                
+                let attemptsToPlaceSingleBubble = 0;
+                let position;
+                let placedSuccessfully = false;
+
+                do {
+                    const padding = bubbleSize / 2 + 10;
+                    const randX = padding + Math.random() * (containerWidth - 2 * padding - bubbleSize);
+                    const randY = padding + Math.random() * (containerHeight - 2 * padding - bubbleSize);
+
+                    position = {
+                        x: randX,
+                        y: randY
+                    };
+                    
+                    attemptsToPlaceSingleBubble++;
+                    
+                    if (attemptsToPlaceSingleBubble > 200) {
+                        break;
+                    }
+                    if (!checkOverlap(position, activeBubbles)) {
+                        placedSuccessfully = true;
+                    }
+                } while (!placedSuccessfully);
+                
+                if (placedSuccessfully) {
+                    bubble.style.left = `${position.x}px`;
+                    bubble.style.top = `${position.y}px`;
+                    
+                    activeBubbles.push({
+                        x: position.x + bubbleSize/2,
+                        y: position.y + bubbleSize/2,
+                        size: bubbleSize
+                    });
+                    
+                    bubble.style.animation = `float 4s ease-in-out ${bubblesPlaced * 0.2}s infinite`;
+                    bubbleContainer.appendChild(bubble);
+                    renderedEntryIds.add(entry.id);
+                    bubblesPlaced++;
+                }
+
+                currentAttemptIndex++;
+                safetyCounter++;
+            }
+        }
+
+        function createBubble(entry) {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.dataset.id = entry.id;
+            
+            if (entry.type === 'page') {
+                bubble.classList.add('page-diary');
+                bubble.textContent = entry.display;
+            } else if (entry.type === 'image') {
+                bubble.classList.add('image-diary');
+                const img = document.createElement('img');
+                img.src = entry.bubbleImageUrl; // Now correctly uses bubbleImageUrl for the image source
+                img.alt = 'Memory Bubble';
+                img.onerror = () => {
+                    img.src = `https://placehold.co/${bubbleSize}x${bubbleSize}/b8a99e/ffffff?text=Img`;
+                };
+                bubble.appendChild(img);
+
+                const overlayText = document.createElement('span');
+                overlayText.className = 'overlay-text';
+                overlayText.textContent = entry.display; // This is the custom text you set
+                bubble.appendChild(overlayText);
+            }
+            
+            bubble.addEventListener('click', (event) => {
+                event.stopPropagation();
+                openModal(entry);
+            });
+            
+            return bubble;
+        }
+
+        function checkOverlap(newPosition, existingPositions) {
+            const newBubbleCenterX = newPosition.x + bubbleSize / 2;
+            const newBubbleCenterY = newPosition.y + bubbleSize / 2;
+
+            return existingPositions.some(existingPos => {
+                const dx = newBubbleCenterX - existingPos.x;
+                const dy = newBubbleCenterY - existingPos.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                return distance < minDistance;
+            });
+        }
+
+        function navigateNextBubbles() {
+            if (diaryEntries.length === 0) return;
+            currentFirstBubbleIndex = (currentFirstBubbleIndex + SCROLL_STEP) % diaryEntries.length;
+            renderBubbles();
+        }
+
+        function navigatePrevBubbles() {
+            if (diaryEntries.length === 0) return;
+            currentFirstBubbleIndex = (currentFirstBubbleIndex - SCROLL_STEP + diaryEntries.length) % diaryEntries.length;
+            renderBubbles();
+        }
+
+        function openModal(entry) {
+            modalTitle.textContent = entry.type === 'page' ? entry.display : 'Memory';
+            modalText.textContent = entry.content;
+            
+            if (entry.imageUrl && entry.imageUrl !== 'none') {
+                modalImage.src = entry.imageUrl;
+                modalImage.onerror = () => {
+                    modalImage.src = `https://placehold.co/600x400/5a4a42/ffffff?text=Image+Unavailable`;
+                };
+                modalImageContainer.style.display = 'block';
+            } else {
+                modalImageContainer.style.display = 'none';
+            }
+            
+            contentModal.classList.add('visible');
+            setTimeout(() => {
+                modalContent.classList.add('active');
+            }, 10);
+        }
+
+        function closeModal() {
+            modalContent.classList.remove('active');
+            setTimeout(() => {
+                contentModal.classList.remove('visible');
+            }, 300);
+        }
+
+        window.addEventListener('load', initDiary);
+    </script>
+</body>
+</html>
